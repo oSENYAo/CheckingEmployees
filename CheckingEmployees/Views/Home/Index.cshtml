@@ -1,0 +1,29 @@
+﻿@model List<FormAbsence>
+
+<p>Здесь будет возможность создать или изменить</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Причина отсутствия</th>
+            <th>Дата начала</th>
+            <th>Продолжительность отсутствия</th>
+            <th>Oтсутствие учтено?</th>
+            <th>Комментарий человека</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tbody>
+            <tr>
+                <td>@item.Reason</td>
+                <td>@item.StartDate</td>
+                <td>@item.Duration</td>
+                <td>@item.Discounted</td>
+                <td>@item.Description</td>
+                <td><button>удалить</button></td>
+            </tr>
+        </tbody>
+    }
+</table>

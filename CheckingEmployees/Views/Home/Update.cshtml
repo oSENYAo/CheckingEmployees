@@ -1,0 +1,35 @@
+﻿@model FormAbsence
+
+
+<form asp-antiforgery="true" asp-action="Update" asp-controller="Home">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <label asp-for="Reason"></label><br />
+        <select @Html.DropDownList("Reason", Html.GetEnumSelectList<Causes>(), "Причина отсутствия", new { @class = "form-control" })></select>
+        <span asp-validation-for="Reason"></span>
+    </div>
+
+    <div>
+        <label asp-for="StartDate"></label>
+        <input asp-for="StartDate" value="@DateTime.Now.Date" />
+        <span asp-validation-for="StartDate"></span>
+    </div>
+    <div>
+        <label asp-for="Duration"></label><br />
+        <input asp-for="Duration" />
+        <span asp-validation-for="Duration"></span>
+    </div>
+    <div>
+        <label asp-for="Discounted"></label>
+        <input type="checkbox" asp-for="Discounted" />
+        <span asp-validation-for="Discounted"></span>
+    </div>
+    <div>
+        <label asp-for="Description"></label>
+        <input type="text" asp-for="Description" />
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <input type="submit" value="Создать запись в БД" />
+</form>
