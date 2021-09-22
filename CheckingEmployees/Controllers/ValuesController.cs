@@ -1,11 +1,7 @@
 ﻿using CheckingEmployees.Data.ADO.NET.Repository;
 using CheckingEmployees.Models;
-using CheckingEmployees.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -17,15 +13,12 @@ namespace CheckingEmployees.Controllers
     {
         private readonly FormAbsenceGetDataRepository _getDataRepository;
         private readonly FormAbsenceChangeDataRepository _changeDataRepository;
-        private readonly CheckEmployeesContext _context;
 
         public ValuesController(FormAbsenceGetDataRepository getDataRepository
-            , FormAbsenceChangeDataRepository changeDataRepository
-            , CheckEmployeesContext context)
+            , FormAbsenceChangeDataRepository changeDataRepository)
         {
             _getDataRepository = getDataRepository;
             _changeDataRepository = changeDataRepository;
-            _context = context;
         }
 
         [HttpGet]
@@ -42,38 +35,30 @@ namespace CheckingEmployees.Controllers
                     return NotFound();
                 return Ok(result);
         }
-
         [HttpPost]
         public async Task<ActionResult<FormAbsence>> Create(FormAbsence model)
         {
             if (model != null)
             {
                 var result = await _changeDataRepository.CreateDataAsync(model);
-                if (result == 0)
+                if (result == null)
                     return this.StatusCode((int)HttpStatusCode.InternalServerError);
                 return Ok(model);
             }
             return BadRequest();
         }
-
-        //[HttpPost]
-        //public async Task<ActionResult<FormAbsence>> Create(FormAbsence model)
-        //{
-        //    if (model != null)
-        //    {
-        //        var result = await _context.FormAbsences.AddAsync(model);
-        //        await _context.SaveChangesAsync();
-        //        return Ok(result);
-        //    }
-        //    return BadRequest();
-        //}
         [HttpPut]
         public async Task<ActionResult<FormAbsence>> Update(FormAbsence model)
         {
             if (model != null)
             {
+                var modelId = await _getDataRepository.GetByIdAsync(model.Id);
+                if (modelId == null)
+                    return NotFound();
                 var result = await _changeDataRepository.UpdateDataAsync(model);
-                return Ok();
+                if(result == null)
+                    return this.StatusCode((int)HttpStatusCode.InternalServerError);
+                return Ok(result);
             }
             return BadRequest();
         }

@@ -1,12 +1,15 @@
-using CheckingEmployees.Data.ADO.NET;
-using CheckingEmployees.Data.ADO.NET.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace CheckingEmployees
+namespace CheckingEmployees_MVC
 {
     public class Startup
     {
@@ -16,17 +19,11 @@ namespace CheckingEmployees
         }
 
         public IConfiguration Configuration { get; }
-        
+
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IConfiguration>(Configuration);
-
-            services.AddTransient<AppDbContext>();
-            services.AddTransient<FormAbsenceChangeDataRepository>();
-            services.AddTransient<FormAbsenceGetDataRepository>();
-
-            services.AddControllers();
-
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,8 +33,13 @@ namespace CheckingEmployees
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
-            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -46,7 +48,9 @@ namespace CheckingEmployees
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

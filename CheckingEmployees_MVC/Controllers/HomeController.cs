@@ -1,10 +1,13 @@
-﻿using CheckingEmployees.Data.ADO.NET.Repository;
-using CheckingEmployees.Models;
-using CheckingEmployees.ViewModels;
+﻿using CheckingEmployees_MVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace CheckingEmployees.Controllers
+namespace CheckingEmployees_MVC.Controllers
 {
     public class HomeController : Controller
     {
@@ -12,7 +15,7 @@ namespace CheckingEmployees.Controllers
         private readonly FormAbsenceChangeDataRepository _changeDataRepository;
 
         public HomeController(FormAbsenceGetDataRepository getDataRepository
-            ,FormAbsenceChangeDataRepository changeDataRepository)
+            , FormAbsenceChangeDataRepository changeDataRepository)
         {
             _getDataRepository = getDataRepository;
             _changeDataRepository = changeDataRepository;
@@ -21,7 +24,7 @@ namespace CheckingEmployees.Controllers
         public async Task<IActionResult> Index()
         {
             var result = await _getDataRepository.GetAllAsync();
-            if(result.Count != 0)
+            if (result.Count != 0)
                 return View(result);
             return Content("Ничего нет");
         }
@@ -44,16 +47,16 @@ namespace CheckingEmployees.Controllers
                     Description = model.Description
                 };
                 var result = await _changeDataRepository.CreateDataAsync(form);
-                if (result == 0)
+                if (result == null)
                     return Content("кажется не получилось");
                 return RedirectToAction("Index");
             }
             return View();
         }
-        public async Task<IActionResult> Update(int id) 
+        public async Task<IActionResult> Update(int id)
         {
             var model = await _getDataRepository.GetByIdAsync(id);
-            return View(model);            
+            return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> Update(FormAbsence model)
@@ -68,10 +71,9 @@ namespace CheckingEmployees.Controllers
         {
             var model = await _getDataRepository.GetByIdAsync(id);
             var result = await _changeDataRepository.DeleteDataAsync(model);
-            if(result != 0)
+            if (result != 0)
                 return RedirectToAction("Index");
             return Content("result == 0");
         }
-        
     }
 }

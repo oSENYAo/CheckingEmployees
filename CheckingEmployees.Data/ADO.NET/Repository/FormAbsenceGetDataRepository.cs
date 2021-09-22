@@ -20,6 +20,10 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
         {
             _context = context;
         }
+        /// <summary>
+        /// return async List<FormAbsence>
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<FormAbsence>> GetAllAsync()
         {
             _context.Connection();
@@ -53,6 +57,11 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
 
             return formAbsence;
         }
+        /// <summary>
+        /// returns model FormAbsence async by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<FormAbsence> GetByIdAsync(int id)
         {
             _context.Connection();

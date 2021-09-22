@@ -20,44 +20,50 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
             _context = context;
         }
         /// <summary>
-        /// returns 0 if failed to create data
+        /// returns null if failed to create data
+        /// returns new model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<int> CreateDataAsync(FormAbsence model)
+        public async Task<FormAbsence> CreateDataAsync(FormAbsence model)
         {
             _context.Connection();
             int countChangeData = 0;
             if (model == null)
-                return countChangeData;
-         
+                return null;
             var sqlExpression =
                 "INSERT INTO FormAbsence (reason, start_date, duration, discounted, description)" +
                 $" VALUES ({((int)model.Reason)}, '{model.StartDate.Date}', {model.Duration}, '{model.Discounted}', '{model.Description}')";
+            
             using (SqlConnection connection = new SqlConnection(_context.ConnectString))
             {
                 await connection.OpenAsync();
 
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
                 countChangeData = await command.ExecuteNonQueryAsync();
+
+                command.CommandText = "SELECT MAX(id) FROM FormAbsence";
+                object resultId = await command.ExecuteScalarAsync();
+                model.Id = Convert.ToInt32(resultId);
             }
-            return countChangeData;
+            return model;
         }
         /// <summary>
-        /// returns 0 if data update failed
+        /// returns null if data update failed
+        /// return FormAbsence
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<int> UpdateDataAsync(FormAbsence model)
+        public async Task<FormAbsence> UpdateDataAsync(FormAbsence model)
         {
             _context.Connection();
             int countChangeData = 0;
             
             if (model == null)
-                return countChangeData;
+                return null;
 
             var sqlExpression =
-                $"UPDATE FormAbsence SET reason = {((Causes)model.Reason)}, start_date = '{model.StartDate.Date}', " +
+                $"UPDATE FormAbsence SET reason = {((int)model.Reason)}, start_date = '{model.StartDate.Date}', " +
                 $"duration = {model.Duration}, discounted = '{model.Discounted}', description = '{model.Description}'" +
                 $"WHERE id = {model.Id}"; 
             using (SqlConnection connection = new SqlConnection(_context.ConnectString))
@@ -67,7 +73,7 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
                 countChangeData = await command.ExecuteNonQueryAsync();
             }
-            return countChangeData;
+            return model;
         }
         /// <summary>
         /// returns 0 if it was not possible to delete data
