@@ -32,8 +32,8 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
             if (model == null)
                 return null;
             var sqlExpression =
-                "INSERT INTO FormAbsence (reason, start_date, duration, discounted, description)" +
-                $" VALUES ({((int)model.Reason)}, '{model.StartDate.Date}', {model.Duration}, '{model.Discounted}', '{model.Description}')";
+                "INSERT INTO FormAbsence (reason, start_date, duration, discounted, description, NewColumn)" +
+                $" VALUES ({((int)model.Reason)}, '{model.StartDate.Date}', {model.Duration}, '{model.Discounted}', '{model.Description}', '{model.NewColumn}')";
             
             using (SqlConnection connection = new SqlConnection(_context.ConnectString))
             {
@@ -65,7 +65,7 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
             var sqlExpression =
                 $"UPDATE FormAbsence SET reason = {((int)model.Reason)}, start_date = '{model.StartDate.Date}', " +
                 $"duration = {model.Duration}, discounted = '{model.Discounted}', description = '{model.Description}'" +
-                $"WHERE id = {model.Id}"; 
+                $"NewColumn = '{model.NewColumn}',WHERE id = {model.Id}"; 
             using (SqlConnection connection = new SqlConnection(_context.ConnectString))
             {
                 await connection.OpenAsync();

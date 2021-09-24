@@ -22,6 +22,7 @@ namespace CheckingEmployees.Models
         [StringLength(1024, ErrorMessage = "Комментарий не должен быть длинее 1024 символов")]
         [RegularExpression("^[а-яёА-ЯЁ0-9 ]*$", ErrorMessage = "Допустимы комментарии только на русском языке")]
         public string Description { get; set; }
+        public int NewColumn { get; set; }
     }
 }
 

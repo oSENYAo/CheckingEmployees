@@ -45,8 +45,8 @@
         </div>
         <div class="form-group col-md-5">
             <label for="age">Учтено при оплате</label>
-            <input class="form-check-input" type="checkbox" 
-                   name="discounted" id="check" checked/>
+            <input class="form-check-input" type="checkbox"
+                   name="discounted" id="check" checked />
             <div class="valid-feedback">
                 Все хорошо!
             </div>
@@ -64,6 +64,10 @@
                 Это поле обязательно
             </div>
         </div>
+        <div class="form-group col-md-5">
+            <label for="age">Новая колонка:</label>
+            <input class="form-control" name="NewColumn"/>
+        </div>
         <div class="panel-body">
             <button type="submit" id="submit" class="btn btn-primary">Сохранить</button>
             <a id="reset" class="btn btn-primary">Сбросить</a>
@@ -77,6 +81,7 @@
                 <th>Продолжительность отсутствия</th>
                 <th>Oтсутствие учтено?</th>
                 <th>Комментарий человека</th>
+                <th>Новая колонка</th>
             </tr>
         </thead>
         <tbody>
@@ -120,6 +125,7 @@
                 form.elements["duration"].value = result.duration;
                 form.elements["discounted"].value = result.discounted;
                 form.elements["description"].value = result.description;
+                form.elements["NewColumn"].value = result.NewColumn
             } else {
                 console.log("Error:" + response.status)
             }
@@ -138,7 +144,7 @@
             }
         }
         // updates value using method 'row()'
-        async function EditFormAbsecne(Fid, Freason, FstartDate, Fduration, Fdiscounted, Fdescription) {
+        async function EditFormAbsecne(Fid, Freason, FstartDate, Fduration, Fdiscounted, Fdescription, FnewColumn) {
             const response = await fetch("/api/Values",
                 {
                     method: "PUT",
@@ -149,7 +155,8 @@
                         startDate: FstartDate,
                         duration: Fduration,
                         discounted: Fdiscounted,
-                        description: Fdescription
+                        description: Fdescription,
+                        NewColumn: FnewColumn
                     })
                 });
             if (response.ok) {
@@ -196,7 +203,7 @@
             }
         }
         // creates value using method 'row()
-        async function CreateFormAbsence(Freason, FstartDate, Fduration, Fdiscounted, Fdescription) {
+        async function CreateFormAbsence(Freason, FstartDate, Fduration, Fdiscounted, Fdescription, FnewColumn) {
             const response = await fetch("/api/Values", {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -205,7 +212,8 @@
                     startDate: FstartDate,
                     duration: Fduration,
                     discounted: Fdiscounted,
-                    description: Fdescription
+                    description: Fdescription,
+                    NewColumn: FnewColumn
                 })
             });
             if (response.ok) {
@@ -271,7 +279,7 @@
             let startDateId = document.createElement("td");
             startDateId.append(convertDate(form.startDate));
             tr.append(startDateId);
-
+            
             let durationId = document.createElement("td");
             let intDuration = parseInt(form.duration, 10);
             if (intDuration == 1)
@@ -291,6 +299,10 @@
             let descriptionId = document.createElement("td");
             descriptionId.append(form.description);
             tr.append(descriptionId);
+
+            let newColumnId = document.createElement("td");
+            descriptionId.append(form.NewColumn);
+            tr.append(newColumnId);
 
             let editTd = document.createElement("td");
 
@@ -349,13 +361,15 @@
             let duration = form.elements["duration"].value;
             let discounted = form.elements["discounted"].checked;
             let description = form.elements["description"].value;
+            let NewColumn = form.elements["NewColumn"].value;
+
             if (id == 0) {
                 let errDiv = document.getElementById("errors");
                 while (errDiv.firstChild) {
                     errDiv.removeChild(errDiv.lastChild);
                 }
                 errDiv.style = "display:none;";
-                CreateFormAbsence(reason, startDate, duration, discounted, description)
+                CreateFormAbsence(reason, startDate, duration, discounted, description, NewColumn)
             } else {
                 let errDiv = document.getElementById("errors");
                 while (errDiv.firstChild) {
@@ -363,7 +377,7 @@
                 }
                 errDiv.style = "display:none;";
 
-                EditFormAbsecne(id, reason, startDate, duration, discounted, description);
+                EditFormAbsecne(id, reason, startDate, duration, discounted, description, NewColumn);
             }
         });
 

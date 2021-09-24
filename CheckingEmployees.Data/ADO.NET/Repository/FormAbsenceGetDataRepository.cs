@@ -48,7 +48,8 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
                             StartDate = reader.GetDateTime(2),
                             Duration = reader.GetInt32(3),
                             Discounted = reader.GetBoolean(4),
-                            Description = reader.GetString(5)
+                            Description = reader.GetString(5),
+                            NewColumn = reader.GetInt32(6)
                         });
                     }
                 }
@@ -85,6 +86,7 @@ namespace CheckingEmployees.Data.ADO.NET.Repository
                         formAbsence.Duration = reader.GetInt32(3);
                         formAbsence.Discounted = reader.GetBoolean(4);
                         formAbsence.Description = reader.GetString(5);
+                        formAbsence.NewColumn = reader.GetInt32(6);
                     }
                 }
                 await reader.CloseAsync();
